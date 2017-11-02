@@ -1,4 +1,4 @@
-/* ************************************************************************** */
+/************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   yo.c                                               :+:      :+:    :+:   */
@@ -6,7 +6,7 @@
 /*   By: dglaser <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/30 17:52:47 by dglaser           #+#    #+#             */
-/*   Updated: 2017/10/31 14:49:42 by dglaser          ###   ########.fr       */
+/*   Updated: 2017/11/01 19:53:45 by dglaser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,13 +43,18 @@ int		get_next_line(const int fd, char **line)
 		while ((tmp[mark] != '\0') && (tmp[mark] != '\n'))
 			mark++;
 		ft_putstr("\npart2\n");
+		ft_putstr(tmp);
 		if (tmp[mark] == '\n')
 		{
 			add = ft_strsub(tmp, 0, mark - 1); //turn this into a function 
 			ft_strjoin(*line, add);
 			tmp = ft_strsub(tmp, mark + 1, BUFF_SIZE - mark);
+			ft_putstr("Okay, this one actually should print");
 			return (1);
 		}
+		else
+			ft_strjoin(*line, tmp);
+		free(tmp);
 	}
 	ft_putstr("\npart3\n");
 	ret = read(fd, buf, BUFF_SIZE);
@@ -60,8 +65,6 @@ int		get_next_line(const int fd, char **line)
 		return(ft_final(buf, tmp, add, line));
 	ft_putstr("\nnot final\n");
 	mark = 0;
-	ft_strjoin(*line, tmp);	
-	ft_putstr("\njoin works");
 	tmp = (char *)malloc(sizeof(char) * (ft_strlen(buf)));	
 	while (mark <= BUFF_SIZE)
 	{
@@ -87,34 +90,23 @@ int		main(int argc, char **argv)
 {
 	int		fd;
 	char 	*line;
+	int x;
+
 	if (argc == 1)
 		fd = 0;
 	else if (argc == 2)
 		fd = open(argv[1], O_RDONLY);
 	else
 		return (2);
+	x = get_next_line(fd, &line);
+	printf("this is what x is %d", x);
 	while (get_next_line(fd, &line) == 1)
 	{
 		ft_putstr("\nyo, is this even working?\n");
-		ft_putendl(line);
+		ft_putstr(line);
 		free(line);
 	}
 	ft_putstr(line);
-	ft_putstr("Where the fuck does this go?");
-//	if (argc == 2)
-//		close(fd);
+	if (argc == 2)
+		close(fd);
 }
-
-
-
-
-
-
-			
-	
-
-
-
-
-
-
