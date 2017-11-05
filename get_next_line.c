@@ -7,7 +7,7 @@ int		ft_check_tmp(char *tmp, char **line, char *add, int mark, int x)
 	x = ft_strlen(tmp);
 	while (mark <= x)
 	{
-		if (tmp[mark] == '\n')
+		if (tmp[mark] == '\n') 
 		{
 			add = ft_strsub(tmp, 0, mark); //this might have to be mark - 1, v might have to be + 1
 			*line = ft_strdup(add);
@@ -21,12 +21,13 @@ int		ft_check_tmp(char *tmp, char **line, char *add, int mark, int x)
 	return (mark);
 }
 //ft_final will not always return 0, remember that tmp is not always empty, and buf can have several '\n's, so put them in tmp, and return 1. 
-int		ft_final(char *buf, char **tmp, char *add, char **line)
+int		ft_final(char *buf, char **tmp, char *add, char **line, int final)
 {
 	int i;
 	int x;
 
 	i = 0;
+	final = 1;
 	x = ft_strlen(buf);
 //	ft_putstr("\nIN FINAL\n");
 	while (i <= x)
@@ -35,7 +36,7 @@ int		ft_final(char *buf, char **tmp, char *add, char **line)
 		{
 			add = ft_strsub(buf, 0, i);
 			if (*tmp[0] != '\0')
-				add = ft_strjoin(add, *tmp);
+				add = ft_strjoin(*tmp, add);
 			*line = ft_strdup(add);
 			*tmp = ft_strsub(*tmp, i + 1, x - i);
 			return (1);
@@ -43,8 +44,8 @@ int		ft_final(char *buf, char **tmp, char *add, char **line)
 		i++;
 	}
 //	ft_putstr("Final finished loop");
-	add = ft_strjoin(buf, *tmp);
-//	*line = ft_strdup(add); //this is causing the seg fault. 
+	add = ft_strjoin(*tmp, buf);
+	*line = ft_strdup(add); 
 //	ft_putstr("\nfinal returns 0\n");
 	return (0);
 }
@@ -92,33 +93,38 @@ int		get_next_line(const int fd, char **line)
 	int			ret;
 	static char	*tmp;
 	char		*add;
-	int			mark;
+    static int	final;
 
 	add = NULL;
-	mark = 0;
 //	ft_putstr("\nThis is the saved tmp :");
 //	ft_putstr(tmp);
+	if (final == 1)
+	{
+		if (ft_check_tmp(tmp, line, add, 0, 0 == 0))
+				return (0);
+	}
+
 	if (tmp != NULL)
 	{
 //		ft_putstr("\nTMP IS NOT NULL\n");
-		if (ft_check_tmp(tmp, line, add, 0, 0) == 1)
+		if (ft_check_tmp(tmp, line, add, 0, 0 == 1))
 			return (1);
 	}
 //	ft_putstr("\npart 1\n");
 	ret  = read(fd, buf, BUFF_SIZE);
-//	ft_putstr("\nThis is BUFFFF :");
-//	ft_putstr(buf);
-//	ft_putstr(" ret : ");
-//	ft_putnbr(ret);
+	ft_putstr("\nThis is BUFFFF :");
+	ft_putstr(buf);
+	ft_putstr(" ret : ");
+	ft_putnbr(ret);
 	if (ret != BUFF_SIZE)
-		return(ft_final(buf, &tmp, add, line)); //maybe make this loop within itself until it reaches the end?
+		return(ft_final(buf, &tmp, add, line, final)); //maybe make this loop within itself until it reaches the end?
 //	ft_putstr("\nnot final\n");
 	//at this point, we have checked for \n in tmp, we aren't at the end of the file, tmp may not be empty. 
 	while (ft_check_buf(buf, &tmp, add, line) != 1)
 	{
 		ret = read(fd, buf, BUFF_SIZE);
 		if (ret != BUFF_SIZE)
-			return (ft_final(buf, &tmp, add, line));
+			return (ft_final(buf, &tmp, add, line, final));
 //		ft_putstr("\ngets past ft_final\n");
 	}
 	return (1);
