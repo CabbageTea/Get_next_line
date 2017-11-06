@@ -5,11 +5,14 @@ int		ft_check_tmp(char **tmp, char **line, char *add, int mark, int x)
 {
 //	ft_putstr("\nin check_tmp\n");
 	x = ft_strlen(*tmp);
+	ft_putnbr(x);
 	ft_putstr("\nHeymydude\n");
 	while (mark <= x)
 	{
+		ft_putstr("\nam I getting to the loop?");
 		if (*tmp[mark] == '\n') 
 		{
+			ft_putstr("\nI don't think I should be here");
 			add = ft_strsub(*tmp, 0, mark); //this might have to be mark - 1, v might have to be + 1 ///THIS IS THE SEG FAULT
 			*line = ft_strdup(add);
 			*tmp = ft_strsub(*tmp, mark + 2, x - mark);
@@ -32,7 +35,7 @@ int		ft_final(char *buf, char **tmp, char *add, char **line, int final)
 	i = 0;
 	final = 1;
 	x = ft_strlen(buf);
-//	ft_putstr("\nIN FINAL\n");
+	ft_putstr("\nIN FINAL\n");
 	while (i <= x)
 	{
 		if (buf[i] == '\n')
@@ -103,7 +106,8 @@ int		get_next_line(const int fd, char **line)
 //	ft_putstr(tmp);
 	if (final == 1)
 	{
-		return (ft_check_tmp(&tmp, line, add, 0, 0 == 0));
+		ft_putstr("\nIN FINAL\n");
+		return (ft_check_tmp(&tmp, line, add, 0, 0));
 	}
 
 	if (tmp != NULL)
