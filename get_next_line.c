@@ -1,22 +1,25 @@
 #include "get_next_line.h"
 #include <stdio.h>
 
-int		ft_check_tmp(char *tmp, char **line, char *add, int mark, int x)
+int		ft_check_tmp(char **tmp, char **line, char *add, int mark, int x)
 {
 //	ft_putstr("\nin check_tmp\n");
-	x = ft_strlen(tmp);
+	x = ft_strlen(*tmp);
+	ft_putstr("\nHeymydude\n");
 	while (mark <= x)
 	{
-		if (tmp[mark] == '\n') 
+		if (*tmp[mark] == '\n') 
 		{
-			add = ft_strsub(tmp, 0, mark); //this might have to be mark - 1, v might have to be + 1
+			add = ft_strsub(*tmp, 0, mark); //this might have to be mark - 1, v might have to be + 1 ///THIS IS THE SEG FAULT
 			*line = ft_strdup(add);
-			tmp = ft_strsub(tmp, mark + 2, x - mark);
+			*tmp = ft_strsub(*tmp, mark + 2, x - mark);
+			ft_putnbr(1);
 			return (1);
 		}
 		mark++;
 	}
-	//we're going to leave tmp alone. Since we strdup when we do *line
+
+//	we're going to leave tmp alone. Since we strdup when we do *line
 	mark = 0;
 	return (mark);
 }
@@ -61,7 +64,7 @@ int		ft_check_buf(char *buf, char **tmp, char *add, char **line)
 		if (buf[i] == '\n')
 		{
 	//		ft_putstr("\n");
-	//		ft_putstr("This is BUF");
+//			ft_putstr("This is BUF");
 	//		ft_putstr(buf);
 			add = ft_strsub(buf, 0, i);
 	//		ft_putstr(add);
@@ -71,7 +74,7 @@ int		ft_check_buf(char *buf, char **tmp, char *add, char **line)
 			*line = ft_strdup(add);
 			*tmp = ft_strsub(buf, i + 1, BUFF_SIZE - i);/////////
 	//		ft_putstr("2222");
-	//		ft_putstr(*tmp);
+//			ft_putstr(*tmp);
 			return (1);
 		}
 		i++;
@@ -80,7 +83,7 @@ int		ft_check_buf(char *buf, char **tmp, char *add, char **line)
 		*tmp = ft_strjoin(*tmp, buf);
 	else
 		*tmp = ft_strdup(buf);
-//	ft_putstr("\nYYYYYYYYYY");
+	//	ft_putstr("\nYYYYYYYYYY");
 //	ft_putstr("\nThis is check_buf's saved tmp");
 //	ft_putstr(*tmp);
 	return (0);
@@ -96,26 +99,25 @@ int		get_next_line(const int fd, char **line)
     static int	final;
 
 	add = NULL;
-//	ft_putstr("\nThis is the saved tmp :");
+	ft_putstr("\nThis is the saved tmp :");
 //	ft_putstr(tmp);
 	if (final == 1)
 	{
-		if (ft_check_tmp(tmp, line, add, 0, 0 == 0))
-				return (0);
+		return (ft_check_tmp(&tmp, line, add, 0, 0 == 0));
 	}
 
 	if (tmp != NULL)
 	{
-//		ft_putstr("\nTMP IS NOT NULL\n");
-		if (ft_check_tmp(tmp, line, add, 0, 0 == 1))
+		ft_putstr("\nTMP IS NOT NULL\n");
+		if (ft_check_tmp(&tmp, line, add, 0, 0 == 1))
 			return (1);
 	}
 //	ft_putstr("\npart 1\n");
 	ret  = read(fd, buf, BUFF_SIZE);
-	ft_putstr("\nThis is BUFFFF :");
-	ft_putstr(buf);
-	ft_putstr(" ret : ");
-	ft_putnbr(ret);
+	//ft_putstr("\nThis is BUFFFF :");
+	//ft_putstr(buf);
+	//ft_putstr(" ret : ");
+	//ft_putnbr(ret);
 	if (ret != BUFF_SIZE)
 		return(ft_final(buf, &tmp, add, line, final)); //maybe make this loop within itself until it reaches the end?
 //	ft_putstr("\nnot final\n");
