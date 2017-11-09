@@ -79,6 +79,8 @@ int		get_next_line(const int fd, char **line)
 		if (ft_check_tmp(&tmp, line, add, 0, 0 == 1))
 			return (1);
 	}
+	if ((read(fd, buf, 0) < 0) || (!line) || (fd < 0))
+			return (-1);
 	ret  = read(fd, buf, BUFF_SIZE);
 	if (ret == 0)
 		return (0);
